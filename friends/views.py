@@ -2,12 +2,13 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.utils.module_loading import import_string
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, generics, filters
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from friendship.models import Friend, FriendshipRequest
+from friendship.models import Friend, FriendshipRequest, FriendshipManager
 from friendship.exceptions import AlreadyExistsError, AlreadyFriendsError
-
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import FriendsProfile
 from .pagination import CustomPagination
 
@@ -186,19 +187,10 @@ class FriendViewSet(viewsets.ModelViewSet):
             status.HTTP_201_CREATED
         )
 
-    @action(detail=False,
-            serializer_class=FriendshipProfileSerializer,
-            pagination_class=CustomPagination,
-            methods=['post'])
-    def search(self, request, *args, **kwargs):
-        context = {}
 
-        if request.method == "GET":
-            search_query = request.GET.get("q", None)
-            search_results = FriendsProfile.objects.filter(email__icontains=search_query).filter(
-                username__contains=search_query).distinct()
-            account = []
-            for a in search_results:
-                account.append(a)
-            context['account'] = account
-        return Response(context)
+class FriendsSearchList(generics.ListAPIView):
+    queryset = FriendsProfile.objects.all()
+    serializer_class = FriendshipProfileSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^name', 'email']
+    pagination_class = CustomPagination

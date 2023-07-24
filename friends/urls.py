@@ -4,8 +4,8 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('friend', views.FriendViewSet, 'friend')
-#router.register('friend/usersearch', views.FriendProfileViewSet, 'usersearch')
 
 urlpatterns = [
       path('', include(router.urls)),
+      path('search/', views.FriendsSearchList.as_view(), name='search'),
 ]

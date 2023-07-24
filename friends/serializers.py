@@ -38,5 +38,5 @@ class FriendshipRequestResponseSerializer(serializers.ModelSerializer):
 
 class FriendshipProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = get_user_model()
-        fields = ('email', 'username')
+        model = FriendsProfile
+        fields = '__all__'

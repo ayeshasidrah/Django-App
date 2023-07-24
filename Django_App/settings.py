@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'friends',
     'friendship',
     'rest_framework_simplejwt',
+    'django_filters',
 
 ]
 
@@ -83,6 +84,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+
 }
 
 ROOT_URLCONF = 'Django_App.urls'
