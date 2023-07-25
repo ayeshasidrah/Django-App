@@ -4,15 +4,15 @@ from django.shortcuts import get_object_or_404
 from django.utils.module_loading import import_string
 from rest_framework import status, viewsets, generics, filters
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from friendship.models import Friend, FriendshipRequest, FriendshipManager
+from friendship.models import Friend, FriendshipRequest
 from friendship.exceptions import AlreadyExistsError, AlreadyFriendsError
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.throttling import UserRateThrottle
+
 from .models import FriendsProfile
 from .pagination import CustomPagination
 
-from .serializers import FriendshipRequestSerializer, FriendSerializer, FriendshipRequestResponseSerializer, \
+from .serializers import FriendshipRequestSerializer, FriendSerializer, FriendshipRequestResponseSerializer,\
     FriendshipProfileSerializer
 
 User = get_user_model()
@@ -72,6 +72,7 @@ class FriendViewSet(viewsets.ModelViewSet):
 
     @action(detail=False,
             serializer_class=FriendshipRequestSerializer,
+            throttle_classes=[UserRateThrottle],
             methods=['post'])
     def add_friend(self, request, username=None):
         """
@@ -82,6 +83,7 @@ class FriendViewSet(viewsets.ModelViewSet):
         # Creates a friend request from POST data:
         # - username
         # - message
+        # - limits user for 3 requests in a minute
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         to_user = get_object_or_404(
