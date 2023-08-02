@@ -36,7 +36,7 @@ http://127.0.0.1:8000/logout/
 
 ### To list all accepted friends/friend list
 ```commandline
-http://127.0.0.1:8000/friends/friend/-H'Authorization:Token 158aba1cb35cced19092c5b2e0d90950'
+http://127.0.0.1:8000/friends/friend/-H'Authorization:Token 158aba1cb35cced19092c5b2e0d9095'
 ```
 
 ### Search
